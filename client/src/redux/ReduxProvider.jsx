@@ -5,7 +5,9 @@ import store from './store/configureStore'
 
 const ReduxProvider = ({children}) => {
   return (
-    <Provider store={store}>{children}</Provider>
+    <Provider store={store}>
+      {children}
+    </Provider>
   )
 }
 
