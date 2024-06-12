@@ -1,4 +1,6 @@
 const express = require('express')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const dbconnect = require('./src/db/connection')
 const { Schema, default: mongoose } = require('mongoose')
 const app = express()
@@ -41,7 +43,8 @@ app.get('/find', async (req, res) => {
 });
 //to encrypt number and password
 app.post('/register', async (req, res) => {
-  
+  const hashPassword = await bcrypt.hash(req.body.password, saltRounds)
+  console.log(hashPassword)
   const userExist = await User.exists({phoneNumber: req.body.phoneNumber})
   console.log(userExist)
   if(userExist){
