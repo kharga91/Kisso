@@ -1,69 +1,19 @@
 const express = require('express')
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const dbconnect = require('./src/db/connection')
-const { Schema, default: mongoose } = require('mongoose')
+
+const dbConnect = require('./src/db/connection')
+const userRoute = require('./src/routes/user')
+const cors = require('cors');
+
+dbConnect()
 const app = express()
 
+app.use(cors())
 require('dotenv').config()
+//body parser
+app.use(express.json())
+app.use(userRoute)
 
-app.use(express.json()) //body parcel
-dbconnect()
-
-const userSchema = new Schema(
-  {
-    phoneNumber: String,
-    fullName: String,
-    email: String,
-    password: String,
-    gender: {
-      type: String,
-      enum: ['male', 'female', 'others'],
-      default: 'male'
-    },
-    role: {
-      type: String,
-      enum: ['admin', 'user',],
-      default: 'admin'
-    },
-    
-  }
-);
-const User = mongoose.model('User', userSchema);
-const port = process.env.PORT
-
-app.get('/users',  (req, res) => {
-  res.send(['Ram', 'Shyam', 'Hari'])
-
-});
-app.get('/find', async (req, res) => {
-  const data = await User.find()
-  res.json(data)
-
-});
-//to encrypt number and password
-app.post('/register', async (req, res) => {
-  const hashPassword = await bcrypt.hash(req.body.password, saltRounds)
-  console.log(hashPassword)
-  const userExist = await User.exists({phoneNumber: req.body.phoneNumber})
-  console.log(userExist)
-  if(userExist){
-    return res.json({mes: "Phone Number is already taken"})
-  }
-  await User.create(req.body)
-  return res.json({mes: "User register"})
-});
-
-
-app.post('/reg', (req, res) => {
-  res.send('ok')
-  console.log(req.body.phoneNumber)
-  User.create(req.body)
-  
-
-
-
-});
+const port = process.env.PORT || 8000
 
 
 app.listen(port, () => {
