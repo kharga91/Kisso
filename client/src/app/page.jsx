@@ -1,9 +1,14 @@
 import React from 'react'
 import Main from './register/page'
+import sideBarItems from '@/config/sideBarItems.json'
+
 
 const page = () => {
   return (
-    <div><Main/></div>
+    <div><Main/>
+    
+  <sideBarItems/>
+    </div>
   )
 }
 
